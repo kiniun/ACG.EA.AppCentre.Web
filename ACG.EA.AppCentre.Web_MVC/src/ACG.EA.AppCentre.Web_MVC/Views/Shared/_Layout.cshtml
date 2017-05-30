@@ -1,0 +1,247 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ACG AppCentre App</title>
+
+    <environment names="Development">
+        <link href="/Support/Content/bootstrap.min.css" rel="stylesheet" />
+        <link href="/Support/Content/jquery-ui-1.11.0/jquery-ui.min.css" rel="stylesheet" />
+        <link href="/Support/Content/ui.jqgrid.css" rel="stylesheet" />
+        <link href="/Support/Styles/dashboard.css" rel="stylesheet" />
+        <script type="text/javascript" src="/Support/Scripts/assets/js/ie-emulation-modes-warning.js"></script>
+        <script type="text/javascript" src="/Support/Scripts/assets/js/ie10-viewport-bug-workaround.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+
+    @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">ACG.EA.AppCentre.Web_MVC</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                </ul>
+                <p class="nav navbar-text navbar-right">Hello, @User.Identity.Name!</p>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; 2017 - ACG.EA.AppCentre.Web_MVC</p>
+        </footer>
+    </div>
+
+    <environment names="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    </environment>
+
+    @RenderSection("scripts", required: false)
+</body>
+<body>
+    <form id="form2" runat="server">
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @*<a class="navbar-brand" href="/Webpages">ACG Application Centre</a>*@
+                    <a asp-area="" asp-controller="Home" asp-action="Index">ACG Application Centre</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a>You log in:&nbsp;&nbsp; <%=Session["User"].ToString() %></a>
+                            <span style="display: none" id="fldCurrentUser"><%=Session["UserName"].ToString() %></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <% if((bool)Session["InRole"]) { %>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar">
+                    <ul class="nav nav-sidebar">
+                        <li class="active others">
+                            <a class="others" href="Applications.aspx">Applications</a>
+                            <div data-bind="visible: catalogApps().length > 0">
+                                <ul data-bind="foreach: catalogApps" class="collapsibleList">
+                                    <li id="catalogApps">
+                                        <div class="catMenu">
+                                            <div style="cursor: default" onclick="showList(this)">
+                                                <span class="ui-icon ui-icon-triangle-1-e" data-bind="css: catalog_name"></span><span data-bind="text: catalog_name">
+                                                </span>
+                                            </div>
+                                            <ul data-bind="foreach: apps, css: catalog_name">
+                                                <li>
+                                                    <a href="#" data-bind="attr: { href: application_uri, title: application_id }" target="_blank"><span data-bind="text: application_name"></span></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <%if ((bool)Session["IsAppAdmin"])
+                        { %>
+                        <li class="others" id="appAdmin">
+                            <a class="others" href="AppAdmin.aspx">Application Admin</a>
+                            <ul>
+                                <li>
+                                    <span><a href="appUserPermissionReport.aspx">User Permission Report</a></span><br />
+                                </li>
+                                <li>
+                                    <span><a href="grpPermissionReport.aspx">Group Permission Report</a></span><br />
+                                </li>
+                            </ul>
+                        </li>
+                        <% } %>
+                        <%if ((bool)Session["IsAppAdmin"])
+                        { %>
+                        <li id="users">
+                            <a class="others">User Admin</a>
+                            <div>
+                                <ul>
+                                    <li>
+                                        <span><a href="userEdit.aspx">User Edit</a></span><br />
+                                    </li>
+                                    <li>
+                                        <span><a href="allPermissions.aspx">User Permission Edit</a></span><br />
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    <% } %>
+                </div>
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                   @RenderBody()
+                <hr />
+                <footer>
+                    <p>&copy; @DateTime.Now.Year.ToString() - ACG AppCentre App</p>
+                </footer>
+                </div>
+            </div>
+        </div>
+        <% }
+        else { %>
+        <div class="container-fluid">
+            <p> You do not have permissions to view AppCentre</p>
+        </div>
+        <% } %>
+
+        <script type="text/javascript" src="/Support/Content/jquery-ui-1.11.0/jquery-ui.js"></script>
+        <script type="text/javascript" src="/Support/Scripts/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/Support/Scripts/js/docs.min.js"></script>
+        <script type="text/javascript" src="/Support/Scripts/jqGrid/grid.locale-en.js"></script>
+        <script type="text/javascript" src="/Support/Scripts/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+        <script type="text/javascript" src="/Support/Scripts/knockout-3.0.0.min.js"></script>
+        <script type="text/javascript" src="/Support/Scripts/js/underscore-min.js"></script>
+        <script type="text/javascript" src="/Support/Scripts/js/main.js"></script>
+        <script type="text/javascript" src="/Support/Scripts/js/apcModel.js"></script>
+        <script type="text/javascript" src="/Support/Scripts/js/CollapsibleLists.js"></script>
+
+        <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("input[type=submit], button")
+            .button().click(function (event) {
+                event.preventDefault();
+            });
+        });
+
+        function showList(sender) {
+            if (sender.parentElement.children[1].style.display == 'none') {
+                $('div.catMenu ul').hide();
+                $('div.catMenu div span.ui-icon').removeClass('ui-icon-triangle-1-se');
+                $('div.catMenu div span.ui-icon').addClass('ui-icon-triangle-1-e');
+                sender.parentElement.children[1].style.display = 'block';
+                if (sender.children[0].className === 'ui-icon ui-icon-triangle-1-se')
+                    sender.children[0].className = 'ui-icon ui-icon-triangle-1-e';
+                else if (sender.children[0].className === 'ui-icon ui-icon-triangle-1-e')
+                    sender.children[0].className = 'ui-icon ui-icon-triangle-1-se';
+                //                var icons = $('div.catMenu div span.ui-icon');
+                //                getIcons(icons, sender);
+                //$('div.catMenu div span.ui-icon').addClass('ui-icon-triangle-1-se');
+            }
+            else {
+                sender.parentElement.children[1].style.display = 'none';
+                $('div.catMenu div span.ui-icon').removeClass('ui-icon-triangle-1-se');
+                $('div.catMenu div span.ui-icon').addClass('ui-icon-triangle-1-e');
+                //                if (sender.children[0].className === 'ui-icon ui-icon-triangle-1-se')
+                //                    sender.children[0].className = 'ui-icon ui-icon-triangle-1-e';
+                //                if (sender.children[0].className === 'ui-icon ui-icon-triangle-1-e')
+                //                    sender.children[0].className = 'ui-icon ui-icon-triangle-1-se';
+                //                $('div.catMenu div span.ui-icon').removeClass('ui-icon-triangle-1-se');
+                //                $('div.catMenu div span.ui-icon').addClass('ui-icon-triangle-1-e');
+            }
+        }
+
+        function getIcons(icons, sender) {
+            if (icons.length > 0) {
+                for (var i = 0; i < icons.length; i++) {
+                    var catalog;
+                    if (icons[i].nextElementSibling != undefined) {
+                        catalog = icons[i].nextElementSibling.innerHTML;
+                    }
+                    else {
+                        catalog = icons[i].nextSibling.innerHTML;
+                    }
+                    if (catalog == sender.children[1].innerHTML) {
+                        if (icons[i].hasClass('ui-icon-triangle-1-e')) {
+                            icons[i].removeClass('ui-icon-triangle-1-e');
+                            icons[i].addClass('ui-icon-triangle-1-se');
+                        }
+                        if (icons[i].hasClass('ui-icon-triangle-1-se')) {
+                            icons[i].removeClass('ui-icon-triangle-1-se');
+                            icons[i].addClass('ui-icon-triangle-1-e');
+                        }
+                    }
+                }
+            }
+        }
+        </script>
+    </form>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
