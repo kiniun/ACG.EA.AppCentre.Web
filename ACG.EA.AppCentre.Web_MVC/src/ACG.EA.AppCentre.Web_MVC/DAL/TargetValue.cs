@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ACG.EA.AppCentre.Web
+namespace ACG.EA.AppCentre.Web_MVC.DAL
 {
-    public interface IGlobalUtils
+    public class TargetValue
     {
-        void GetSessionVariables(string identity);
     }
 }

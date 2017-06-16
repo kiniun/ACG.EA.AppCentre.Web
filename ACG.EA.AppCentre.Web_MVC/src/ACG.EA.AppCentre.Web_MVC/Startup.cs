@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ACG.EA.AppCentre.Web.Utils;
 
-namespace ACG.EA.AppCentre.Web_MVC
+namespace ACG.EA.AppCentre.Web
 {
     public class Startup
     {
@@ -37,7 +38,10 @@ namespace ACG.EA.AppCentre.Web_MVC
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc();
-
+            // Add AppCentre admin class service
+            services.AddTransient<IAppCentreAdminLib, AppCentreAdminLib>();
+            // Add global class that set session variables
+            services.AddScoped<IGlobalUtils, GlobalUtils>();
             // Adds a default in-memory implementation of IDistributedCache.
             services.AddDistributedMemoryCache();
 

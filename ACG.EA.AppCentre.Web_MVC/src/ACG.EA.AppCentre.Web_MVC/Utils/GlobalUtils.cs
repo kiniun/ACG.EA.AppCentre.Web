@@ -1,42 +1,16 @@
 ﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using SessionExtensionsLib;
-using Microsoft.AspNetCore.Http;
+using Lib = SessionExtensionsLib;
+using ACG.EA.AppCentre.Web.Utils;
 
-namespace ACG.EA.AppCentre.Web_MVC
+namespace ACG.EA.AppCentre.Web
 {
-    public class GlobalUtils: Controller
+    public class GlobalUtils: IGlobalUtils
     {
-        public GlobalUtils(): base()
+        public IAppCentreAdminLib _userProfile { get; }
+
+        public GlobalUtils(IAppCentreAdminLib userProfile)
         {
-            var name = User.Identity.Name;
-            var i = name.IndexOf("\\") + 1;
-            HttpContext.Session.Set("UserName", name.Substring(i, name.Length - i));
-
-            HttpContext.Session.Set("InRole", false);
-            HttpContext.Session.Set("IsAppCentreAdmin", false);
-            HttpContext.Session.Set("IsAppAdmin", false);
-            HttpContext.Session.Set("User", string.Empty);
-
-            Web.Utils.AppCentreAdminLib userProfile = new Web.Utils.AppCentreAdminLib();
-
-            HttpContext.Session.Set("InRole", userProfile.IsUserInRole(HttpContext.Session.Get<string>("Username")));
-
-            if (HttpContext.Session.Get<bool>("InRole"))
-            {
-                HttpContext.Session.Set("User", Web.Utils.AppCentreAdminLib.GetUserProfile(HttpContext.Session.Get<string>("UserName")));
-                HttpContext.Session.Set("IsAppCentreAdmin", userProfile.IsAppCentreAdmin(HttpContext.Session.Get<string>("UserName")));
-                HttpContext.Session.Set("IsAppAdmin", userProfile.IsAppAdmin(HttpContext.Session.Get<string>("UserName")));
-            }
-            else
-            {
-                HttpContext.Session.Set("InRole", false);
-            }
-
-            ScriptPath = "http://" + HttpContext.Request.Host + Request.Path + "/Support/Scripts";
-            ContentPath = "http://" + Request.Host + Request.Path + "/Support/Content";
-            StylesPath = "http://" + Request.Host + Request.Path + "/Support/Styles";
-            appCentrePath = "http://" + Request.Host + Request.Path + "/Webpages";
+            _userProfile = userProfile;
         }
 
         public string ScriptPath { get; set; }
@@ -44,9 +18,42 @@ namespace ACG.EA.AppCentre.Web_MVC
         public string StylesPath { get; set; }
         public string appCentrePath { get; set; }
 
+        public void GetSessionVariables(string identity)
+        {
+            var name = identity;
+            var i = name.IndexOf("\\") + 1;
+            Lib.SessionExtensions.Set("UserName", name.Substring(i, name.Length - i));
+
+            Lib.SessionExtensions.Set("InRole", false);
+            Lib.SessionExtensions.Set("IsAppCentreAdmin", false);
+            Lib.SessionExtensions.Set("IsAppAdmin", false);
+            Lib.SessionExtensions.Set("User", string.Empty);
+
+            //Web.Utils.AppCentreAdminLib userProfile = new Web.Utils.AppCentreAdminLib();
+
+            Lib.SessionExtensions.Set("InRole", _userProfile.IsUserInRole(Lib.SessionExtensions.Get<string>("Username")));
+
+            if (Lib.SessionExtensions.Get<bool>("InRole"))
+            {
+                Lib.SessionExtensions.Set("User", _userProfile.GetUserProfile(Lib.SessionExtensions.Get<string>("UserName")));
+                Lib.SessionExtensions.Set("IsAppCentreAdmin", _userProfile.IsAppCentreAdmin(Lib.SessionExtensions.Get<string>("UserName")));
+                Lib.SessionExtensions.Set("IsAppAdmin", _userProfile.IsAppAdmin(Lib.SessionExtensions.Get<string>("UserName")));
+            }
+            else
+            {
+                Lib.SessionExtensions.Set("InRole", false);
+            }
+
+            //ScriptPath = "http://" + HttpContext.Request.Host + Request.Path + "/Support/Scripts";
+            //ContentPath = "http://" + Request.Host + Request.Path + "/Support/Content";
+            //StylesPath = "http://" + Request.Host + Request.Path + "/Support/Styles";
+            //appCentrePath = "http://" + Request.Host + Request.Path + "/Webpages";
+            //throw new NotImplementedException();
+        }
+
         //protected string UserName = ;
 
-        
+
 
     }
 }

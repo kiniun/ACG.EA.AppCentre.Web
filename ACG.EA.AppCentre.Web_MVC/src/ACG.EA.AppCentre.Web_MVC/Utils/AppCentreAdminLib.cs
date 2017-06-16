@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using ACG.EA.AppCentre.Utils;
 using LibModel = ACG.EA.AppCentre.Lib.Models;
-using ACG.EA.AppCentre.DataUtils;
 
 namespace ACG.EA.AppCentre.Web.Utils
 {
-    public class AppCentreAdminLib: AC_Base
+    public class AppCentreAdminLib: AC_Base, IAppCentreAdminLib
     {
         public AppCentreAdminLib(string app)
         {
@@ -31,7 +28,7 @@ namespace ACG.EA.AppCentre.Web.Utils
 
         }
 
-        public static string GetUserProfile(string userName)
+        public string GetUserProfile(string userName)
         {
             LibModel.User user2;
             try

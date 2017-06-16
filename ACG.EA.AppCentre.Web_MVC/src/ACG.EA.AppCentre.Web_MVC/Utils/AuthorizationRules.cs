@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web.Http;
 
 namespace ACG.EA.AppCentre.Web.Utils
 {
